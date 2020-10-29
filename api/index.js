@@ -20,6 +20,26 @@ app.listen(port, () => {
 });
 
 //routes
+app.get('/testeo', async (req, res) => {
+    try {
+
+        
+
+
+            var query = 'SELECT * FROM public.nettrade ORDER BY row_id ASC LIMIT 2';
+       
+   
+    
+        const response = await pool.query(query);
+
+        res.status(200).json(response.rows)
+
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
 
 app.get('/net/:combinations', async (req, res) => {
     try {
