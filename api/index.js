@@ -40,7 +40,7 @@ app.get('/testeo', async (req, res) => {
     }
 });
 
-app.get('/net/', async (req, res) => {
+app.get('/net/:combinations', async (req, res) => {
     try {
 
         const { Product, iteration, scenathon_id, column } = JSON.parse(req.params.combinations).select;
