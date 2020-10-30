@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV==='development'){
+    require('dotenv').config();
+}
+
 const express = require('express');
 const app = express();
 const cors = require("cors");
@@ -5,7 +9,7 @@ const pool = require('./db');
 const { json } = require('express');
 let port = process.env.PORT || 5000;
 
-
+console.log(`entorno de desarrollo->${process.env.NODE_ENV}`);
 
 app.use(cors());
 
@@ -21,20 +25,10 @@ app.listen(port, () => {
 //routes
 app.get('/testeo', async (req, res) => {
     try {
-
-
-
-
         var query = 'SELECT * FROM public.nettrade ORDER BY row_id ASC LIMIT 2';
-
-
-
         const response = await pool.query(query);
-
         res.status(200).json(response.rows)
-
-
-
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -44,19 +38,14 @@ app.get('/net/:combinations', async (req, res) => {
     try {
 
         const { Product, iteration, scenathon_id, column } = JSON.parse(req.params.combinations).select;
-        
-
         if (column === "Import_quantity") {
             var query = 'SELECT "name",   "Year", "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3  ORDER BY "name","Year" ASC  ';
         } else {
             var query = 'SELECT "name", "Year", "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3  ORDER BY "name","Year" ASC ';
         }
         const response = await pool.query(query, [Product, iteration, scenathon_id]);
-
         res.status(200).json(response.rows)
-
-
-
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -64,11 +53,7 @@ app.get('/net/:combinations', async (req, res) => {
 
 app.get('/protected:combinations', async (req, res) => {
     try {
-
-
         const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
-
-
         switch (GraficaType) {
             case "group":
                 var query = "SELECT \"Year\", SUM(\"ProtectedAreasForest\") AS \"ProtectedAreasForest\", SUM(\"ProtectedAreasOther\") AS \"ProtectedAreasOther\", SUM(\"ProtectedAreasOtherNat\") AS \"ProtectedAreasOtherNat\" FROM \"resultsScen2020\" WHERE \"iteration\"=$1 GROUP BY \"Year\" ORDER BY \"Year\"";
@@ -84,9 +69,8 @@ app.get('/protected:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration]);
-
         res.status(200).json(response.rows)
-
+        pool.end();
 
 
     } catch (err) {
@@ -112,11 +96,8 @@ app.get('/target2/:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [iteration, scenathon]);
-
-        res.status(200).json(response.rows)
-
-
-
+        res.status(200).json(response.rows);
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -124,7 +105,6 @@ app.get('/target2/:combinations', async (req, res) => {
 
 app.get('/target3:combinations', async (req, res) => {
     try {
-
         const { iteration, scenathon, group } = JSON.parse(req.params.combinations).select;
         switch (group) {
             case "group":
@@ -141,11 +121,8 @@ app.get('/target3:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [iteration, scenathon]);
-
-        res.status(200).json(response.rows)
-
-
-
+        res.status(200).json(response.rows);
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -169,11 +146,8 @@ app.get('/target5:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [iteration, scenathon]);
-
         res.status(200).json(response.rows)
-
-
-
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -183,13 +157,9 @@ app.get('/foodenergy2:combinations', async (req, res) => {
     try {
         const { Iteration, Year } = JSON.parse(req.params.combinations).select;
         var query = 'Select "Country",avg("prot_feas")as "Protein_feasible",avg("fat_feas") as "Fat_feasible" from "resultsScen2020" WHERE "iteration"=$1 AND "Year"=$2 GROUP BY "Country"';
-
         const response = await pool.query(query, [Iteration, Year]);
-
         res.status(200).json(response.rows)
-
-
-
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -197,16 +167,11 @@ app.get('/foodenergy2:combinations', async (req, res) => {
 
 app.get('/foodenergy1:combinations', async (req, res) => {
     try {
-
         const { Iteration, scenathon_id, Year } = JSON.parse(req.params.combinations).select;
         var query = 'SELECT "Country", (avg("kcal_feas")) AS Kcal_feasible, avg("kcal_mder") AS Target_MDER FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = $3 GROUP BY "Country" ORDER BY "Country";';
-
         const response = await pool.query(query, [Iteration, scenathon_id, Year]);
-
         res.status(200).json(response.rows)
-
-
-
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -215,7 +180,6 @@ app.get('/foodenergy1:combinations', async (req, res) => {
 app.get('/landcover:combinations', async (req, res) => {
     try {
         const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
-
         switch (GraficaType) {
             case "group":
                 var query = 'SELECT "Year",sum("CalcPasture") as "CalcPasture",sum("CalcCropland") as "CalcCropland",sum("CalcForest") as "CalcForest",sum("CalcNewForest") as "CalcNewForest" ,sum("CalcOtherLand") as "CalcOtherLand",sum("CalcUrban") as "CalcUrban" from "resultsScen2020" WHERE "iteration"=$1 GROUP BY "Year" order by "Year"';
@@ -231,11 +195,8 @@ app.get('/landcover:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration]);
-
-        res.status(200).json(response.rows)
-
-
-
+        res.status(200).json(response.rows);
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -261,11 +222,8 @@ app.get('/biodiversity:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
-
         res.status(200).json(response.rows)
-
-
-
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -290,11 +248,8 @@ app.get('/target1:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [iteration, scenathon]);
-
-        res.status(200).json(response.rows)
-
-
-
+        res.status(200).json(response.rows);
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -318,11 +273,8 @@ app.get('/target6:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [4, 6]);
-
         res.status(200).json(response.rows)
-
-
-
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -346,11 +298,8 @@ app.get('/freshwater1:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
-
         res.status(200).json(response.rows)
-
-
-
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -374,8 +323,8 @@ app.get('/freshwater2:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
-
-        res.status(200).json(response.rows)
+        res.status(200).json(response.rows);
+        pool.end();
 
 
 
@@ -403,11 +352,8 @@ app.get('/netforest2:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
-
-        res.status(200).json(response.rows)
-
-
-
+        res.status(200).json(response.rows);
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }
@@ -431,9 +377,8 @@ app.get('/gas2_1:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
-
         res.status(200).json(response.rows)
-
+        pool.end();
 
 
     } catch (err) {
@@ -459,11 +404,8 @@ app.get('/gas2_2:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
-
         res.status(200).json(response.rows)
-
-
-
+        pool.end();
     } catch (err) {
         console.error(err.message);
     }

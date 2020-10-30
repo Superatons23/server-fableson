@@ -1,2 +1,4 @@
 # dependencies
 /node_modules
+# otro tipo de archivos
+.env
