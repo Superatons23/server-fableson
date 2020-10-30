@@ -24,11 +24,12 @@ app.listen(port, () => {
 
 //routes
 app.get('/testeo', async (req, res) => {
+   console.log("entre")
     try {
         var query = 'SELECT * FROM public.nettrade ORDER BY row_id ASC LIMIT 2';
         const response = await pool.query(query);
         res.status(200).json(response.rows)
-        pool.end();
+     
     } catch (err) {
         console.error(err.message);
     }
@@ -45,7 +46,7 @@ app.get('/net/:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Product, iteration, scenathon_id]);
         res.status(200).json(response.rows)
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -70,7 +71,7 @@ app.get('/protected:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration]);
         res.status(200).json(response.rows)
-        pool.end();
+         
 
 
     } catch (err) {
@@ -97,7 +98,7 @@ app.get('/target2/:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [iteration, scenathon]);
         res.status(200).json(response.rows);
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -122,7 +123,7 @@ app.get('/target3:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [iteration, scenathon]);
         res.status(200).json(response.rows);
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -147,7 +148,7 @@ app.get('/target5:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [iteration, scenathon]);
         res.status(200).json(response.rows)
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -159,7 +160,7 @@ app.get('/foodenergy2:combinations', async (req, res) => {
         var query = 'Select "Country",avg("prot_feas")as "Protein_feasible",avg("fat_feas") as "Fat_feasible" from "resultsScen2020" WHERE "iteration"=$1 AND "Year"=$2 GROUP BY "Country"';
         const response = await pool.query(query, [Iteration, Year]);
         res.status(200).json(response.rows)
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -171,7 +172,7 @@ app.get('/foodenergy1:combinations', async (req, res) => {
         var query = 'SELECT "Country", (avg("kcal_feas")) AS Kcal_feasible, avg("kcal_mder") AS Target_MDER FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = $3 GROUP BY "Country" ORDER BY "Country";';
         const response = await pool.query(query, [Iteration, scenathon_id, Year]);
         res.status(200).json(response.rows)
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -196,7 +197,7 @@ app.get('/landcover:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration]);
         res.status(200).json(response.rows);
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -223,7 +224,7 @@ app.get('/biodiversity:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
         res.status(200).json(response.rows)
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -249,7 +250,7 @@ app.get('/target1:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [iteration, scenathon]);
         res.status(200).json(response.rows);
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -274,7 +275,7 @@ app.get('/target6:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [4, 6]);
         res.status(200).json(response.rows)
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -299,7 +300,7 @@ app.get('/freshwater1:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
         res.status(200).json(response.rows)
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -324,7 +325,7 @@ app.get('/freshwater2:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
         res.status(200).json(response.rows);
-        pool.end();
+         
 
 
 
@@ -339,13 +340,13 @@ app.get('/netforest2:combinations', async (req, res) => {
         const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "Year","Country",sum("NetForestChange") as "NetForestChange" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Year","Country" Order by "Year","Country"';
+                var query = 'SELECT "Year","Country",sum("NetForestChange") as "NetForestChange" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Country","Year" Order by "Country","Year"';
                 break;
             case "countries":
-                var query = 'SELECT "Year","Country",sum("NetForestChange") as "NetForestChange" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year","Country" Order by "Year","Country"';
+                var query = 'SELECT "Year","Country",sum("NetForestChange") as "NetForestChange" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country","Year" Order by "Country","Year"';
                 break;
             case "regions":
-                var query = 'SELECT "Year","Country",sum("NetForestChange") as "NetForestChange" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year","Country" Order by "Year","Country"';
+                var query = 'SELECT "Year","Country",sum("NetForestChange") as "NetForestChange" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country","Year" Order by "Country","Year"';
                 break;
             default:
                 var query = null;
@@ -353,7 +354,7 @@ app.get('/netforest2:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
         res.status(200).json(response.rows);
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
@@ -364,13 +365,13 @@ app.get('/gas2_1:combinations', async (req, res) => {
         const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "Year","Country",sum("CalcAllAgriCO2e") as "AgriCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Year","Country" ORDER BY "Year","Country"';
+                var query = 'SELECT "Year","Country",sum("CalcAllAgriCO2e") as "AgriCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
                 break;
             case "countries":
-                var query = 'SELECT "Year","Country",sum("CalcAllAgriCO2e") as "AgriCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year","Country" ORDER BY "Year","Country"';
+                var query = 'SELECT "Year","Country",sum("CalcAllAgriCO2e") as "AgriCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
                 break;
             case "regions":
-                var query = 'SELECT "Year","Country",sum("CalcAllAgriCO2e") as "AgriCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year","Country" ORDER BY "Year","Country"';
+                var query = 'SELECT "Year","Country",sum("CalcAllAgriCO2e") as "AgriCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
                 break;
             default:
                 var query = null;
@@ -378,7 +379,7 @@ app.get('/gas2_1:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
         res.status(200).json(response.rows)
-        pool.end();
+         
 
 
     } catch (err) {
@@ -387,17 +388,17 @@ app.get('/gas2_1:combinations', async (req, res) => {
 });
 app.get('/gas2_2:combinations', async (req, res) => {
     try {
-
+console.log(JSON.parse(req.params.combinations).select)
         const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "Year","Country",avg("CalcAllLandCO2e") as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Year","Country" ORDER BY "Year","Country"';
+                var query = 'SELECT "Year","Country",avg("CalcAllLandCO2e") as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Country" ,"Year" ORDER BY "Year","Country"';
                 break;
             case "countries":
-                var query = 'SELECT "Year","Country",avg("CalcAllLandCO2e") as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year","Country" ORDER BY "Year","Country"';
+                var query = 'SELECT "Year","Country",avg("CalcAllLandCO2e") as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
                 break;
             case "regions":
-                var query = 'SELECT "Year","Country",avg("CalcAllLandCO2e") as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year","Country" ORDER BY "Year","Country"';
+                var query = 'SELECT "Year","Country",avg("CalcAllLandCO2e") as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
                 break;
             default:
                 var query = null;
@@ -405,7 +406,7 @@ app.get('/gas2_2:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
         res.status(200).json(response.rows)
-        pool.end();
+         
     } catch (err) {
         console.error(err.message);
     }
