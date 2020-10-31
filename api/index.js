@@ -39,10 +39,11 @@ app.get('/net:combinations', async (req, res) => {
     try {
 
         const { Product, iteration, scenathon_id, column } = JSON.parse(req.params.combinations).select;
+        console.log(scenathon_id);
         if (column === "Import_quantity") {
-            var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 AND "Import_quantity"!=0 ORDER BY "Year","name" ASC  ';
+            var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 AND "Import_quantity"!=0 ORDER BY "name","Year" ASC  ';
         } else {
-            var query = 'SELECT "name", "Year", ROUND("Export"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 AND "Export_quantity"!=0 ORDER BY "Year","name" ASC ';
+            var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 AND "Export_quantity"!=0 ORDER BY "name","Year"  ASC ';
         }
         const response = await pool.query(query, [Product, iteration, scenathon_id]);
         res.status(200).json(response.rows)
