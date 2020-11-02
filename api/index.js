@@ -7,7 +7,7 @@ const app = express();
 const cors = require("cors");
 const pool = require('./db');
 const { json } = require('express');
-let port = process.env.PORT || 5000;
+
 
 console.log(`entorno de desarrollo->${process.env.NODE_ENV}`);
 
@@ -18,8 +18,8 @@ app.use(express.json());
 
 
 //build routes with PostgreSQL queries
-app.listen(port, () => {
-    console.log(`listening ${port}`);
+app.listen(process.env.PORT , () => {
+    console.log(`listening ${process.env.PORT}`);
 });
 
 //routes
