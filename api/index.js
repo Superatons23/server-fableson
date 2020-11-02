@@ -41,9 +41,9 @@ app.get('/net:combinations', async (req, res) => {
         const { Product, iteration, scenathon_id, column } = JSON.parse(req.params.combinations).select;
         console.log(scenathon_id);
         if (column === "Import_quantity") {
-            var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 AND "Import_quantity"!=0 ORDER BY "name","Year" ASC  ';
+            var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3  ORDER BY "name","Year" ASC  ';
         } else {
-            var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 AND "Export_quantity"!=0 ORDER BY "name","Year"  ASC ';
+            var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3   ORDER BY "name","Year" ASC ';
         }
         const response = await pool.query(query, [Product, iteration, scenathon_id]);
         res.status(200).json(response.rows)
@@ -172,7 +172,8 @@ app.get('/foodenergy1:combinations', async (req, res) => {
         const { Iteration, scenathon_id, Year } = JSON.parse(req.params.combinations).select;
         var query = 'SELECT "Country", ROUND(avg("kcal_feas")::numeric,2) AS "Kcal_feasible", ROUND(avg("kcal_mder")::numeric,2) AS "Target_MDER" FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = $3 GROUP BY "Country" ORDER BY "Country"';
         const response = await pool.query(query, [Iteration, scenathon_id, Year]);
-        res.status(200).json(response.rows)
+        res.status(200).json(response.rows);
+       
          
     } catch (err) {
         console.error(err.message);
@@ -325,6 +326,7 @@ app.get('/freshwater2:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
+      
         res.status(200).json(response.rows);
          
 
@@ -335,7 +337,8 @@ app.get('/freshwater2:combinations', async (req, res) => {
     }
 });
 
-app.get('/netforest2:combinations', async (req, res) => {
+app.get('/forestTwo:combinations', async (req, res) => {
+    console.log("entre net forest")
     try {
 
         const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
@@ -355,7 +358,7 @@ app.get('/netforest2:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
         res.status(200).json(response.rows);
-         
+     //   console.log(  res.status(200).json(response.rows))
     } catch (err) {
         console.error(err.message);
     }
