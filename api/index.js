@@ -369,13 +369,13 @@ app.get('/gas2:combinations', async (req, res) => {
         const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "Year","Country",ROUND(sum("CalcAllAgriCO2e")::numeric,2) as "AgriCO2e",ROUND(avg("CalcAllLandCO2e")::numeric,2) as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
+                var query = 'SELECT "Year","Country",(ROUND(sum("CalcAllAgriCO2e")::numeric,2)/1000) as "AgriCO2e",(ROUND(avg("CalcAllLandCO2e")::numeric,2)/1000) as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
                 break;
             case "countries":
-                var query = 'SELECT "Year","Country",ROUND(sum("CalcAllAgriCO2e")::numeric,2) as "AgriCO2e",ROUND(avg("CalcAllLandCO2e")::numeric,2) as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
+                var query = 'SELECT "Year","Country",(ROUND(sum("CalcAllAgriCO2e")::numeric,2)/1000) as "AgriCO2e",(ROUND(avg("CalcAllLandCO2e")::numeric,2)/1000) as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
                 break;
             case "regions":
-                var query = 'SELECT "Year","Country",ROUND(sum("CalcAllAgriCO2e")::numeric,2) as "AgriCO2e",ROUND(avg("CalcAllLandCO2e")::numeric,2) as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
+                var query = 'SELECT "Year","Country",(ROUND(sum("CalcAllAgriCO2e")::numeric,2)/1000) as "AgriCO2e",(ROUND(avg("CalcAllLandCO2e")::numeric,2)/1000) as "LandCO2e" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ,"Year" ORDER BY "Country" ,"Year"';
                 break;
             default:
                 var query = null;
