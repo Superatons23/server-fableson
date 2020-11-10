@@ -89,10 +89,10 @@ app.get('/target5:combinations', async (req, res) => {
                 var query = 'SELECT "Country", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = 2030 GROUP BY "Country" ORDER BY "Country";';
                 break;
             case "countries":
-                var query = 'SELECT "Country", ROUND((avg("kcal_feas"))::numeric,2) AS Kcal_feasible, ROUND(avg("kcal_mder")::numeric,2) AS Target_MDER FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = 2030 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ORDER BY "Country";';
+                var query = 'SELECT "Country", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = 2030 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ORDER BY "Country";';
                 break;
             case "regions":
-                var query = 'SELECT "Country", ROUND((avg("kcal_feas"))::numeric,2) AS Kcal_feasible, ROUND(avg("kcal_mder")::numeric,2) AS Target_MDER FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = 2030 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ORDER BY "Country";';
+                var query = 'SELECT "Country", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = 2030 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ORDER BY "Country";';
                 break;
             default:
                 var query = null;
