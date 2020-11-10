@@ -83,10 +83,10 @@ app.get('/protected:combinations', async (req, res) => {
 
 app.get('/target5:combinations', async (req, res) => {
     try {
-        const { iteration, scenathon, group } = JSON.parse(req.params.combinations).select;
-        switch (group) {
+        const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
             case "group":
-                var query = 'SELECT "Country", ROUND((avg("kcal_feas"))::numeric,2) AS Kcal_feasible, ROUND(avg("kcal_mder")::numeric,2) AS Target_MDER FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = 2030 GROUP BY "Country" ORDER BY "Country";';
+                var query = 'SELECT "Country", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = 2030 GROUP BY "Country" ORDER BY "Country";';
                 break;
             case "countries":
                 var query = 'SELECT "Country", ROUND((avg("kcal_feas"))::numeric,2) AS Kcal_feasible, ROUND(avg("kcal_mder")::numeric,2) AS Target_MDER FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = 2030 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Country" ORDER BY "Country";';
@@ -98,7 +98,8 @@ app.get('/target5:combinations', async (req, res) => {
                 var query = null;
                 break;
         }
-        const response = await pool.query(query, [iteration, scenathon]);
+        const response = await pool.query(query, [Iteration, scenathon_id]);
+        console.log(response)
         res.status(200).json(response.rows)
          
     } catch (err) {
@@ -240,7 +241,7 @@ app.get('/freshwater2:combinations', async (req, res) => {
 });
 
 app.get('/forestTwo:combinations', async (req, res) => {
-    console.log("entre net forest")
+   
     try {
 
         const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
@@ -260,7 +261,7 @@ app.get('/forestTwo:combinations', async (req, res) => {
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
         res.status(200).json(response.rows);
-     //   console.log(  res.status(200).json(response.rows))
+     
     } catch (err) {
         console.error(err.message);
     }
@@ -378,8 +379,8 @@ app.get('/targets123:combinations', async (req, res) => {
 app.get('/targets4and6:combinations', async (req, res) => {
     try {
 
-        const { iteration, scenathon, group } = JSON.parse(req.params.combinations).select;
-        switch (group) {
+        const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
             case "group":
                 var query = 'SELECT "Year", ROUND((SUM("CalcLiveCH4")/1000)::numeric,2) AS "Livestock_CH4", ROUND((SUM("CalcLiveN2O")/1000)::numeric,2) AS "Livestock_N20", ROUND((SUM("CalcCropN2O")/1000)::numeric,2) AS "Crop_N20", ROUND((SUM("CalcCropCH4")/1000)::numeric,2) AS "Crop_CH4", ROUND((SUM("CalcCropCO2")/1000)::numeric,2) AS "Crop_CO2", ROUND(AVG("ghg_agri_target")::numeric,2) AS "ghg_agri_target", ROUND((AVG("CalcAllLandCO2e")/100)::numeric,2) AS "total_GHG_land", ROUND(AVG("ghg_lu_target")::numeric,2) AS "GHG_LU_target", ROUND(sum("CalcWFblue")::numeric,2) as "BlueWater", ROUND(sum("water_target")::numeric,2) as "water_target" from "resultsScen2020" WHERE "iteration"=$1 and "scenathon_id"=$2 AND "Year"=2050 GROUP BY "Year" Order by "Year"';
                 break;
@@ -393,7 +394,9 @@ app.get('/targets4and6:combinations', async (req, res) => {
                 var query = null;
                 break;
         }
-        const response = await pool.query(query, [iteration, scenathon]);
+        const response = await pool.query(query, [Iteration, scenathon_id]);
+       
+      
         res.status(200).json(response.rows)
          
     } catch (err) {
