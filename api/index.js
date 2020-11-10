@@ -83,7 +83,7 @@ app.get('/protected:combinations', async (req, res) => {
 
 app.get('/target5:combinations', async (req, res) => {
     try {
-        const { iteration, scenathon, group } = JSON.parse(req.params.combinations).select;
+        const { iteration, scenathon } = JSON.parse(req.params.combinations).select;
         switch (group) {
             case "group":
                 var query = 'SELECT "Country", ROUND((avg("kcal_feas"))::numeric,2) AS Kcal_feasible, ROUND(avg("kcal_mder")::numeric,2) AS Target_MDER FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" = 2030 GROUP BY "Country" ORDER BY "Country";';
