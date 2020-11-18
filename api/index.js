@@ -404,3 +404,30 @@ app.get('/targets4and6:combinations', async (req, res) => {
         console.error(err.message);
     }
 });
+app.get('/tradereport:combinations', async (req, res) => {
+    try {
+
+        const { Product, iteration, scenathon_id, column, Country } = JSON.parse(req.params.combinations).select;
+        if (column === "Import_quantity") {
+            if(Country === "countries"){
+                var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 ORDER BY "name","Year" ASC  ';
+                var response = await pool.query(query, [Product, iteration, scenathon_id]);
+            }else{
+                var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3  AND "name"=$4 ORDER BY "name","Year" ASC  ';
+                var response = await pool.query(query, [Product, iteration, scenathon_id, Country]);
+            }
+        } else {
+            if(Country === "countries"){
+                var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3ORDER BY "name","Year" ASC ';
+                var response = await pool.query(query, [Product, iteration, scenathon_id]);
+            }else{
+                var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 AND "name"=$4  ORDER BY "name","Year" ASC ';
+                var response = await pool.query(query, [Product, iteration, scenathon_id, Country]);
+            }
+        }
+        res.status(200).json(response.rows)
+         
+    } catch (err) {
+        console.error(err.message);
+    }
+});
