@@ -349,6 +349,91 @@ app.get('/forestOne:combinations', async (req, res) => {
     }
 });
 
+
+app.get('/tradereport:combinations', async (req, res) => {
+    try {
+
+        const { Product, iteration, scenathon_id, column, Country } = JSON.parse(req.params.combinations).select;
+        if (column === "Import_quantity") {
+            if(Country === "countries"){
+                var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 ORDER BY "name","Year" ASC  ';
+                var response = await pool.query(query, [Product, iteration, scenathon_id]);
+            }else{
+                var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3  AND "name"=$4 ORDER BY "name","Year" ASC  ';
+                var response = await pool.query(query, [Product, iteration, scenathon_id, Country]);
+            }
+        } else {
+            if(Country === "countries"){
+                var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3ORDER BY "name","Year" ASC ';
+                var response = await pool.query(query, [Product, iteration, scenathon_id]);
+            }else{
+                var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 AND "name"=$4  ORDER BY "name","Year" ASC ';
+                var response = await pool.query(query, [Product, iteration, scenathon_id, Country]);
+            }
+        }
+        res.status(200).json(response.rows)
+         
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.get('/globaltest', async (req, res) => {
+    try {
+
+        //const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch ("group") {
+            case "group":
+                var query = 'SELECT "Year", ROUND((SUM("CalcLiveCH4")/1000)::numeric,2) AS "Livestock_CH4", ROUND((SUM("CalcLiveN2O")/1000)::numeric,2) AS "Livestock_N20", ROUND((SUM("CalcCropN2O")/1000)::numeric,2) AS "Crop_N20", ROUND((SUM("CalcCropCH4")/1000)::numeric,2) AS "Crop_CH4", ROUND((SUM("CalcCropCO2")/1000)::numeric,2) AS "Crop_CO2", ROUND(AVG("ghg_agri_target")::numeric,2) AS "ghg_agri_target", ROUND((AVG("CalcAllLandCO2e")/100)::numeric,2) AS "total_GHG_land", ROUND(AVG("ghg_lu_target")::numeric,2) AS "GHG_LU_target", ROUND(sum("CalcWFblue")::numeric,2) as "BlueWater", ROUND(AVG("water_target")::numeric,2) as "water_target" from "resultsScen2020" WHERE "iteration"=$1 and "scenathon_id"=$2 AND "Year"=2050 GROUP BY "Year" Order by "Year"';
+                break;
+            case "countries":
+                var query = 'SELECT "Year", ROUND((SUM("CalcLiveCH4")/1000)::numeric,2) AS "Livestock_CH4", ROUND((SUM("CalcLiveN2O")/1000)::numeric,2) AS "Livestock_N20", ROUND((SUM("CalcCropN2O")/1000)::numeric,2) AS "Crop_N20", ROUND((SUM("CalcCropCH4")/1000)::numeric,2) AS "Crop_CH4", ROUND((SUM("CalcCropCO2")/1000)::numeric,2) AS "Crop_CO2", ROUND(AVG("ghg_agri_target")::numeric,2) AS "ghg_agri_target", ROUND((AVG("CalcAllLandCO2e")/100)::numeric,2) AS "total_GHG_land", ROUND(AVG("ghg_lu_target")::numeric,2) AS "GHG_LU_target", ROUND(sum("CalcWFblue")::numeric,2) as "BlueWater", ROUND(AVG("water_target")::numeric,2) as "water_target" from "resultsScen2020" WHERE "iteration"=$1 and "scenathon_id"=$2 AND "Year"=2050 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year" Order by "Year"';
+                break;
+            case "regions":
+                var query = 'SELECT "Year", ROUND((SUM("CalcLiveCH4")/1000)::numeric,2) AS "Livestock_CH4", ROUND((SUM("CalcLiveN2O")/1000)::numeric,2) AS "Livestock_N20", ROUND((SUM("CalcCropN2O")/1000)::numeric,2) AS "Crop_N20", ROUND((SUM("CalcCropCH4")/1000)::numeric,2) AS "Crop_CH4", ROUND((SUM("CalcCropCO2")/1000)::numeric,2) AS "Crop_CO2", ROUND(AVG("ghg_agri_target")::numeric,2) AS "ghg_agri_target", ROUND((AVG("CalcAllLandCO2e")/100)::numeric,2) AS "total_GHG_land", ROUND(AVG("ghg_lu_target")::numeric,2) AS "GHG_LU_target", ROUND(sum("CalcWFblue")::numeric,2) as "BlueWater", ROUND(AVG("water_target")::numeric,2) as "water_target" from "resultsScen2020" WHERE "iteration"=$1 and "scenathon_id"=$2 AND "Year"=2050 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year" Order by "Year"';
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [4, 6]);
+       
+      
+        res.status(200).json(response.rows)
+         
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.get('/globaltest1', async (req, res) => {
+    try {
+
+        //const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch ("group") {
+            case "group":
+                var query = 'SELECT "Year", ROUND(SUM("NetForestChange")::numeric,2) as "NetForestChange", ROUND(SUM("forest_target")::numeric,2) as "Forest_target", ROUND(((SUM("resultsScen2020"."ProtectedAreasForest" + "resultsScen2020"."ProtectedAreasOtherNat" +"resultsScen2020"."ProtectedAreasOther")) / SUM("resultsScen2020"."TotalLand"))::numeric,2) AS "Protected_Land", ROUND(AVG("protected_land_target"/100)::numeric,2) as "Protected_land_target", ROUND((avg("CalcBiodivLnd"))::numeric,2) AS "Biodiversity_Land", ROUND(AVG("BiodivTarget")::numeric,2) AS "Target_Biodiversity" FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" > 2020 GROUP BY "Year" ORDER BY "Year"';
+                break;
+            case "countries":
+                var query = 'SELECT "Year", ROUND(SUM("NetForestChange")::numeric,2) as "NetForestChange", ROUND(SUM("forest_target")::numeric,2) as "Forest_target", ROUND(((SUM("resultsScen2020"."ProtectedAreasForest" + "resultsScen2020"."ProtectedAreasOtherNat" +"resultsScen2020"."ProtectedAreasOther")) / SUM("resultsScen2020"."TotalLand"))::numeric,2) AS "Protected_Land", ROUND(AVG("protected_land_target"/100)::numeric,2) as "Protected_land_target", ROUND((avg("CalcBiodivLnd"))::numeric,2) AS "Biodiversity_Land", ROUND(AVG("BiodivTarget")::numeric,2) AS "Target_Biodiversity" FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" > 2020 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year" ORDER BY "Year"';
+                break;
+            case "regions":
+                var query = 'SELECT "Year", ROUND(SUM("NetForestChange")::numeric,2) as "NetForestChange", ROUND(SUM("forest_target")::numeric,2) as "Forest_target", ROUND(((SUM("resultsScen2020"."ProtectedAreasForest" + "resultsScen2020"."ProtectedAreasOtherNat" +"resultsScen2020"."ProtectedAreasOther")) / SUM("resultsScen2020"."TotalLand"))::numeric,2) AS "Protected_Land", ROUND(AVG("protected_land_target"/100)::numeric,2) as "Protected_land_target", ROUND((avg("CalcBiodivLnd"))::numeric,2) AS "Biodiversity_Land", ROUND(AVG("BiodivTarget")::numeric,2) AS "Target_Biodiversity" FROM "resultsScen2020" WHERE "iteration" = $1 AND "scenathon_id" = $2 AND "Year" > 2020 AND "Country" LIKE \'%$_%\' ESCAPE \'$\' GROUP BY "Year" ORDER BY "Year"';
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [4, 6]);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
 app.get('/targets123:combinations', async (req, res) => {
     try {
 
@@ -398,33 +483,6 @@ app.get('/targets4and6:combinations', async (req, res) => {
         const response = await pool.query(query, [Iteration, scenathon_id]);
        
       
-        res.status(200).json(response.rows)
-         
-    } catch (err) {
-        console.error(err.message);
-    }
-});
-app.get('/tradereport:combinations', async (req, res) => {
-    try {
-
-        const { Product, iteration, scenathon_id, column, Country } = JSON.parse(req.params.combinations).select;
-        if (column === "Import_quantity") {
-            if(Country === "countries"){
-                var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 ORDER BY "name","Year" ASC  ';
-                var response = await pool.query(query, [Product, iteration, scenathon_id]);
-            }else{
-                var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3  AND "name"=$4 ORDER BY "name","Year" ASC  ';
-                var response = await pool.query(query, [Product, iteration, scenathon_id, Country]);
-            }
-        } else {
-            if(Country === "countries"){
-                var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3ORDER BY "name","Year" ASC ';
-                var response = await pool.query(query, [Product, iteration, scenathon_id]);
-            }else{
-                var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3 AND "name"=$4  ORDER BY "name","Year" ASC ';
-                var response = await pool.query(query, [Product, iteration, scenathon_id, Country]);
-            }
-        }
         res.status(200).json(response.rows)
          
     } catch (err) {
