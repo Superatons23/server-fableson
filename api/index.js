@@ -24,7 +24,7 @@ app.listen(process.env.PORT , () => {
 
 //routes
 app.get('/testeo', async (req, res) => {
-   console.log("entre")
+ 
     try {
         var query = 'SELECT * FROM public.nettrade ORDER BY row_id ASC LIMIT 2';
         const response = await pool.query(query);
@@ -38,16 +38,13 @@ app.get('/testeo', async (req, res) => {
 app.get('/net:combinations', async (req, res) => {
     try {
 
-        const { Product, iteration, scenathon_id, column } = JSON.parse(req.params.combinations).select;
-        console.log(scenathon_id);
-        if (column === "Import_quantity") {
-            var query = 'SELECT "name",   "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3  ORDER BY "name","Year" ASC  ';
-        } else {
-            var query = 'SELECT "name", "Year", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3   ORDER BY "name","Year" ASC ';
-        }
-        const response = await pool.query(query, [Product, iteration, scenathon_id]);
-        res.status(200).json(response.rows)
-         
+        const { product, iteration, scenathon_id } = JSON.parse(req.params.combinations).select;
+      
+      
+        var query = 'SELECT "name", "Year", ROUND("Import_quantity"::numeric,2) as "Import_quantity", ROUND("Export_quantity"::numeric,2) as "Export_quantity" FROM nettrade WHERE "Product"=$1 AND "iteration"=$2 AND "scenathon_id"=$3  ORDER BY "name","Year" ASC  ';
+        const response = await pool.query(query, [product, iteration, scenathon_id]);
+
+   res.status(200).json(response.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -99,7 +96,7 @@ app.get('/target5:combinations', async (req, res) => {
                 break;
         }
         const response = await pool.query(query, [Iteration, scenathon_id]);
-        console.log(response)
+       
         res.status(200).json(response.rows)
          
     } catch (err) {
