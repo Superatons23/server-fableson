@@ -322,13 +322,13 @@ app.get('/forestOne:combinations', async (req, res) => {
         const { Iteration, scenathon_id, GraficaType } = JSON.parse(req.params.combinations).select;
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "Year", ROUND(sum("NetForestChange")::numeric,2) as "NetForestChange", ROUND(sum(CASE WHEN "NetForestChange" > 0 THEN "NetForestChange" ELSE 0 END)::numeric,2) as "Aforestation", ROUND(sum(CASE WHEN "NetForestChange" < 0 THEN "NetForestChange" ELSE 0 END)::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(AVG("forest_target")::numeric,2) as "Forest_target" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Year" Order by "Year"';
+                var query = 'SELECT "Year", ROUND(sum("NetForestChange")::numeric,2) as "NetForestChange", ROUND(sum("NewForestChange")::numeric,2) as "Aforestation", ROUND(sum("ForestChange")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(AVG("forest_target")::numeric,2) as "Forest_target" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 GROUP BY "Year" Order by "Year"';
                 break;
             case "countries":
-                var query = 'SELECT "Year", ROUND(sum("NetForestChange")::numeric,2) as "NetForestChange", ROUND(sum(CASE WHEN "NetForestChange" > 0 THEN "NetForestChange" ELSE 0 END)::numeric,2) as "Aforestation", ROUND(sum(CASE WHEN "NetForestChange" < 0 THEN "NetForestChange" ELSE 0 END)::numeric,2) as "ForestLoss", ROUND(sum("gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(AVG("forest_target")::numeric,2) as "Forest_target" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\'  GROUP BY "Year" Order by "Year"';
+                var query = 'SELECT "Year", ROUND(sum("NetForestChange")::numeric,2) as "NetForestChange", ROUND(sum("NewForestChange")::numeric,2) as "Aforestation", ROUND(sum("ForestChange")::numeric,2) as "ForestLoss", ROUND(sum("gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(AVG("forest_target")::numeric,2) as "Forest_target" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" NOT LIKE \'%$_%\' ESCAPE \'$\'  GROUP BY "Year" Order by "Year"';
                 break;
             case "regions":
-                var query = 'SELECT "Year", ROUND(sum("NetForestChange")::numeric,2) as "NetForestChange", ROUND(sum(CASE WHEN "NetForestChange" > 0 THEN "NetForestChange" ELSE 0 END)::numeric,2) as "Aforestation", ROUND(sum(CASE WHEN "NetForestChange" < 0 THEN "NetForestChange" ELSE 0 END)::numeric,2) as "ForestLoss", ROUND(sum("gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(AVG("forest_target")::numeric,2) as "Forest_target" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\'  GROUP BY "Year" Order by "Year"';
+                var query = 'SELECT "Year", ROUND(sum("NetForestChange")::numeric,2) as "NetForestChange", ROUND(sum("NewForestChange")::numeric,2) as "Aforestation", ROUND(sum("ForestChange")::numeric,2) as "ForestLoss", ROUND(sum("gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(AVG("forest_target")::numeric,2) as "Forest_target" FROM "resultsScen2020" WHERE "iteration"=$1 AND "scenathon_id"=$2 AND "Country" LIKE \'%$_%\' ESCAPE \'$\'  GROUP BY "Year" Order by "Year"';
                 break;
             default:
                 var query = null;
@@ -512,3 +512,32 @@ app.get('/target1:combinations', async (req, res) => {
     }
 });
 
+
+app.get('/Page1_NetForestCoverChange:combinations', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
+        
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT "year" as "Year", ROUND(SUM("netforest_change")::numeric,2) as "NetForestChange", ROUND(SUM("newforest_change")::numeric,2) as "Aforestation", ROUND(SUM("forest_change")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(SUM("biodivshareland")::numeric,2) as "Biodiversity_Land", ROUND((SUM("livestockch4"))::numeric,2) AS "Livestock_CH4", ROUND((SUM("livestockno2"))::numeric,2) AS "Livestock_N20", ROUND((SUM("cropsn2o"))::numeric,2) AS "Crop_N20", ROUND((SUM("cropsch4"))::numeric,2) AS "Crop_CH4", ROUND((SUM("cropsco2"))::numeric,2) AS "Crop_CO2", ROUND(SUM("totalghgagric")::numeric,2) AS "Total_GHG_agric", ROUND(SUM(DISTINCT"fao_ghgagric")::numeric,2) AS "FAO_GHGagric", ROUND((SUM("deforco2"))::numeric,2) AS "deforestation", ROUND((SUM("otherlucc"))::numeric,2) AS "Other_LUC", ROUND((SUM("sequestco2"))::numeric,2) AS "sequestration", ROUND(SUM("peatco2")::numeric,2) AS "peat", ROUND((SUM("totalghglar"))::numeric,2) AS "total_GHG_land", ROUND(SUM(DISTINCT"fao_ghg_lu")::numeric,2) AS "fao_ghg_lu", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  GROUP BY "year" ORDER BY "year"';
+                break;
+            case "countries":
+                var query = 'SELECT "year" as "Year", ROUND(SUM("netforest_change")::numeric,2) as "NetForestChange", ROUND(SUM("newforest_change")::numeric,2) as "Aforestation", ROUND(SUM("forest_change")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(SUM("biodivshareland")::numeric,2) as "Biodiversity_Land", ROUND((SUM("livestockch4"))::numeric,2) AS "Livestock_CH4", ROUND((SUM("livestockno2"))::numeric,2) AS "Livestock_N20", ROUND((SUM("cropsn2o"))::numeric,2) AS "Crop_N20", ROUND((SUM("cropsch4"))::numeric,2) AS "Crop_CH4", ROUND((SUM("cropsco2"))::numeric,2) AS "Crop_CO2", ROUND(SUM("totalghgagric")::numeric,2) AS "Total_GHG_agric", ROUND(SUM(DISTINCT"fao_ghgagric")::numeric,2) AS "FAO_GHGagric", ROUND((SUM("deforco2"))::numeric,2) AS "deforestation", ROUND((SUM("otherlucc"))::numeric,2) AS "Other_LUC", ROUND((SUM("sequestco2"))::numeric,2) AS "sequestration", ROUND(SUM("peatco2")::numeric,2) AS "peat", ROUND((SUM("totalghglar"))::numeric,2) AS "total_GHG_land", ROUND(SUM(DISTINCT"fao_ghg_lu")::numeric,2) AS "fao_ghg_lu", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All FABLE countries\' GROUP BY "year" ORDER BY "year"';
+                break;
+            case "regions":
+                var query = 'SELECT "year" as "Year", ROUND(SUM("netforest_change")::numeric,2) as "NetForestChange", ROUND(SUM("newforest_change")::numeric,2) as "Aforestation", ROUND(SUM("forest_change")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(SUM("biodivshareland")::numeric,2) as "Biodiversity_Land", ROUND((SUM("livestockch4"))::numeric,2) AS "Livestock_CH4", ROUND((SUM("livestockno2"))::numeric,2) AS "Livestock_N20", ROUND((SUM("cropsn2o"))::numeric,2) AS "Crop_N20", ROUND((SUM("cropsch4"))::numeric,2) AS "Crop_CH4", ROUND((SUM("cropsco2"))::numeric,2) AS "Crop_CO2", ROUND(SUM("totalghgagric")::numeric,2) AS "Total_GHG_agric", ROUND(SUM(DISTINCT"fao_ghgagric")::numeric,2) AS "FAO_GHGagric", ROUND((SUM("deforco2"))::numeric,2) AS "deforestation", ROUND((SUM("otherlucc"))::numeric,2) AS "Other_LUC", ROUND((SUM("sequestco2"))::numeric,2) AS "sequestration", ROUND(SUM("peatco2")::numeric,2) AS "peat", ROUND((SUM("totalghglar"))::numeric,2) AS "total_GHG_land", ROUND(SUM(DISTINCT"fao_ghg_lu")::numeric,2) AS "fao_ghg_lu", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All ROW regions\' GROUP BY "year" ORDER BY "year"';
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [Iteration]);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
