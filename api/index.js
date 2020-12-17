@@ -541,3 +541,61 @@ app.get('/Page1_NetForestCoverChange:combinations', async (req, res) => {
         console.error(err.message);
     }
 });
+app.get('/Page4_MultipleProducts:combinations', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType , products, countries } = JSON.parse(req.params.combinations).select;
+        
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" = ANY ($3) GROUP BY "year","product" ORDER BY "product","year"';
+                break;
+            case "countries":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" = ANY ($3) GROUP BY "year","product" ORDER BY "product","year"';
+                break;
+            case "regions":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" = ANY ($3) GROUP BY "year","product" ORDER BY "product","year"';
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [Iteration, countries, products]);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page4_SingleProduct:combinations', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType , product, countries } = JSON.parse(req.params.combinations).select;
+        
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" =$3 GROUP BY "year","product" ORDER BY "product","year"';
+                break;
+            case "countries":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" IN($2:csv) AND "product" IN($3:csv) GROUP BY "year","product" ORDER BY "product","year"';
+                break;
+            case "regions":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" IN($2:csv) AND "product" IN($3:csv) GROUP BY "year","product" ORDER BY "product","year"';
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [Iteration, countries, product]);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+
