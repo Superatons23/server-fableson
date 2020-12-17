@@ -548,19 +548,26 @@ app.get('/Page4_MultipleProducts:combinations', async (req, res) => {
         
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" = ANY ($3) GROUP BY "year","product" ORDER BY "product","year"';
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product" = ANY ($2) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, products];
                 break;
             case "countries":
-                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" = ANY ($3) GROUP BY "year","product" ORDER BY "product","year"';
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product" = ANY ($2) AND "country_id" NOT IN (30,24,21,25,26,23,22,27) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, products];
                 break;
             case "regions":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product" = ANY ($2) AND "country_id" IN(30,24,21,25,26,23,22,27) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, products];
+                break;
+            case "arrayCountry":
                 var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" = ANY ($3) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, countries, products];
                 break;
             default:
                 var query = null;
                 break;
         }
-        const response = await pool.query(query, [Iteration, countries, products]);
+        const response = await pool.query(query,params);
         res.status(200).json(response.rows)
          
 
@@ -576,19 +583,26 @@ app.get('/Page4_SingleProduct:combinations', async (req, res) => {
         
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" =$3 GROUP BY "year","product" ORDER BY "product","year"';
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, product];
                 break;
             case "countries":
-                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" IN($2:csv) AND "product" IN($3:csv) GROUP BY "year","product" ORDER BY "product","year"';
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 AND "country_id" NOT IN (30,24,21,25,26,23,22,27) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, product];
                 break;
             case "regions":
-                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" IN($2:csv) AND "product" IN($3:csv) GROUP BY "year","product" ORDER BY "product","year"';
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 AND "country_id" IN(30,24,21,25,26,23,22,27) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, product];
+                break;
+            case "arrayCountry":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" = $3 GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, countries, product];
                 break;
             default:
                 var query = null;
                 break;
         }
-        const response = await pool.query(query, [Iteration, countries, product]);
+        const response = await pool.query(query,params);
         res.status(200).json(response.rows)
          
 
