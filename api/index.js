@@ -21,7 +21,7 @@ app.listen(process.env.PORT , () => {
     console.log(`listening ${process.env.PORT}`);
 });
 
-//routes
+//--------------------------------------------------------SCENATHON 2020----------------------------------------------//
 app.get('/testeo', async (req, res) => {
  
     try {
@@ -510,6 +510,8 @@ app.get('/target1:combinations', async (req, res) => {
         console.error(err.message);
     }
 });
+
+//--------------------------------------------------------SCENATHON 2019----------------------------------------------//
 
 
 app.get('/Page1_NetForestCoverChange:combinations', async (req, res) => {
