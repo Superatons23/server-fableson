@@ -704,13 +704,13 @@ app.get('/Page1_FoodEnergy:combinations', async (req, res) => {
         
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "year" as "Year", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  GROUP BY "year" ORDER BY "year"';
+                var query = 'SELECT "year" as "Year", ROUND((avg("kcal_feas"))::numeric,2) AS "Kcal_feasible", ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS "Target_MDER" FROM public.indicators19 WHERE iteration=$1  GROUP BY "year" ORDER BY "year"';
                 break;
             case "countries":
-                var query = 'SELECT "year" as "Year", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All FABLE countries\' GROUP BY "year" ORDER BY "year"';
+                var query = 'SELECT "year" as "Year", ROUND((avg("kcal_feas"))::numeric,2) AS "Kcal_feasible", ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS "Target_MDER" FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All FABLE countries\' GROUP BY "year" ORDER BY "year"';
                 break;
             case "regions":
-                var query = 'SELECT "year" as "Year", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All ROW regions\' GROUP BY "year" ORDER BY "year"';
+                var query = 'SELECT "year" as "Year", ROUND((avg("kcal_feas"))::numeric,2) AS "Kcal_feasible", ROUND((avg("kcal_targ"))::numeric,2) AS "kcal_target", ROUND(avg("kcal_mder")::numeric,2) AS "Target_MDER" FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All ROW regions\' GROUP BY "year" ORDER BY "year"';
                 break;
             default:
                 var query = null;
