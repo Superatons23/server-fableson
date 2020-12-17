@@ -541,3 +541,75 @@ app.get('/Page1_NetForestCoverChange:combinations', async (req, res) => {
         console.error(err.message);
     }
 });
+app.get('/Page4_MultipleProducts:combinations', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType , products, countries } = JSON.parse(req.params.combinations).select;
+        
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product" = ANY ($2) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, products];
+                break;
+            case "countries":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product" = ANY ($2) AND "country_id" NOT IN (30,24,21,25,26,23,22,27) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, products];
+                break;
+            case "regions":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product" = ANY ($2) AND "country_id" IN(30,24,21,25,26,23,22,27) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, products];
+                break;
+            case "arrayCountry":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" = ANY ($3) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, countries, products];
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query,params);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page4_SingleProduct:combinations', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType , product, countries } = JSON.parse(req.params.combinations).select;
+        
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, product];
+                break;
+            case "countries":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 AND "country_id" NOT IN (30,24,21,25,26,23,22,27) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, product];
+                break;
+            case "regions":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 AND "country_id" IN(30,24,21,25,26,23,22,27) GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, product];
+                break;
+            case "arrayCountry":
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "country" = ANY ($2) AND "product" = $3 GROUP BY "year","product" ORDER BY "product","year"';
+                var params=[Iteration, countries, product];
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query,params);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+
