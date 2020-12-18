@@ -785,13 +785,13 @@ app.get('/Page2_GreenhouseGas:combinations', async (req, res) => {
         const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND(sum(i.totalghgagric)::numeric,2) as "Total_GHG_agric", ROUND(avg(i.totalghglar)::numeric,2) as "total_GHG_land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND(sum(i.totalghgagric)::numeric,2) as "AgriCO2e", ROUND(avg(i.totalghglar)::numeric,2) as "LandCO2e" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
                 break;
             case "countries":
-                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND(sum(i.totalghgagric)::numeric,2) as "Total_GHG_agric", ROUND(avg(i.totalghglar)::numeric,2) as "total_GHG_land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND "group"= \'All FABLE countries\'  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND(sum(i.totalghgagric)::numeric,2) as "AgriCO2e", ROUND(avg(i.totalghglar)::numeric,2) as "LandCO2e" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND "group"= \'All FABLE countries\'  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
                 break;
             case "regions":
-                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND(sum(i.totalghgagric)::numeric,2) as "Total_GHG_agric", ROUND(avg(i.totalghglar)::numeric,2) as "total_GHG_land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND "group"= \'All ROW regions\'  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND(sum(i.totalghgagric)::numeric,2) as "AgriCO2e", ROUND(avg(i.totalghglar)::numeric,2) as "LandCO2e" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND "group"= \'All ROW regions\'  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
                 break;
             default:
                 var query = null;
