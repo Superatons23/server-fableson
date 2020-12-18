@@ -807,7 +807,8 @@ app.get('/Page2_GreenhouseGas:combinations', async (req, res) => {
         console.error(err.message);
     }
 });
-app.get('/Page2_FoodEnergy', async (req, res) => {
+app.get('/Page2_FoodEnergy:combinations', async (req, res) => {
+    
     try {
 
         const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
