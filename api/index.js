@@ -520,13 +520,13 @@ app.get('/Page1_full:combinations', async (req, res) => {
         
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "year" as "Year", ROUND(SUM("netforest_change")::numeric,2) as "NetForestChange", ROUND(SUM("newforest_change")::numeric,2) as "Aforestation", ROUND(SUM("forest_change")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(SUM("biodivshareland")::numeric,2) as "Biodiversity_Land", ROUND((SUM("livestockch4"))::numeric,2) AS "Livestock_CH4", ROUND((SUM("livestockno2"))::numeric,2) AS "Livestock_N20", ROUND((SUM("cropsn2o"))::numeric,2) AS "Crop_N20", ROUND((SUM("cropsch4"))::numeric,2) AS "Crop_CH4", ROUND((SUM("cropsco2"))::numeric,2) AS "Crop_CO2", ROUND(SUM("totalghgagric")::numeric,2) AS "Total_GHG_agric", ROUND(SUM(DISTINCT"fao_ghgagric")::numeric,2) AS "FAO_GHGagric", ROUND((SUM("deforco2"))::numeric,2) AS "deforestation", ROUND((SUM("otherlucc"))::numeric,2) AS "Other_LUC", ROUND((SUM("sequestco2"))::numeric,2) AS "sequestration", ROUND(SUM("peatco2")::numeric,2) AS "peat", ROUND((SUM("totalghglar"))::numeric,2) AS "total_GHG_land", ROUND(SUM(DISTINCT"fao_ghg_lu")::numeric,2) AS "fao_ghg_lu", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  GROUP BY "year" ORDER BY "year"';
+                var query = 'SELECT "year" as "Year", ROUND(SUM("netforest_change")::numeric,2) as "NetForestChange", ROUND(SUM("newforest_change")::numeric,2) as "Aforestation", ROUND(SUM("forest_change")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(SUM("biodivshareland")::numeric,2) as "Biodiversity_Land", ROUND((SUM("livestockch4"))::numeric,2) AS "Livestock_CH4", ROUND((SUM("livestockno2"))::numeric,2) AS "Livestock_N20", ROUND((SUM("cropsn2o"))::numeric,2) AS "Crop_N20", ROUND((SUM("cropsch4"))::numeric,2) AS "Crop_CH4", ROUND((SUM("cropsco2"))::numeric,2) AS "Crop_CO2", ROUND(SUM("totalghgagric")::numeric,2) AS "Total_GHG_agric", ROUND(SUM(DISTINCT"fao_ghgagric")::numeric,2) AS "FAO_GHGagric", ROUND((SUM("deforco2"))::numeric,2) AS "deforestation", ROUND((SUM("otherlucc"))::numeric,2) AS "Other_LUC", ROUND((SUM("sequestco2"))::numeric,2) AS "sequestration", ROUND(SUM("peatco2")::numeric,2) AS "peat", ROUND((sum("totalghglar"))::numeric,2) AS "total_GHG_land", ROUND(SUM(DISTINCT"fao_ghg_lu")::numeric,2) AS "fao_ghg_lu", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  GROUP BY "year" ORDER BY "year"';
                 break;
             case "countries":
-                var query = 'SELECT "year" as "Year", ROUND(SUM("netforest_change")::numeric,2) as "NetForestChange", ROUND(SUM("newforest_change")::numeric,2) as "Aforestation", ROUND(SUM("forest_change")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(SUM("biodivshareland")::numeric,2) as "Biodiversity_Land", ROUND((SUM("livestockch4"))::numeric,2) AS "Livestock_CH4", ROUND((SUM("livestockno2"))::numeric,2) AS "Livestock_N20", ROUND((SUM("cropsn2o"))::numeric,2) AS "Crop_N20", ROUND((SUM("cropsch4"))::numeric,2) AS "Crop_CH4", ROUND((SUM("cropsco2"))::numeric,2) AS "Crop_CO2", ROUND(SUM("totalghgagric")::numeric,2) AS "Total_GHG_agric", ROUND(SUM(DISTINCT"fao_ghgagric")::numeric,2) AS "FAO_GHGagric", ROUND((SUM("deforco2"))::numeric,2) AS "deforestation", ROUND((SUM("otherlucc"))::numeric,2) AS "Other_LUC", ROUND((SUM("sequestco2"))::numeric,2) AS "sequestration", ROUND(SUM("peatco2")::numeric,2) AS "peat", ROUND((SUM("totalghglar"))::numeric,2) AS "total_GHG_land", ROUND(SUM(DISTINCT"fao_ghg_lu")::numeric,2) AS "fao_ghg_lu", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All FABLE countries\' GROUP BY "year" ORDER BY "year"';
+                var query = 'SELECT "year" as "Year", ROUND(SUM("netforest_change")::numeric,2) as "NetForestChange", ROUND(SUM("newforest_change")::numeric,2) as "Aforestation", ROUND(SUM("forest_change")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(SUM("biodivshareland")::numeric,2) as "Biodiversity_Land", ROUND((SUM("livestockch4"))::numeric,2) AS "Livestock_CH4", ROUND((SUM("livestockno2"))::numeric,2) AS "Livestock_N20", ROUND((SUM("cropsn2o"))::numeric,2) AS "Crop_N20", ROUND((SUM("cropsch4"))::numeric,2) AS "Crop_CH4", ROUND((SUM("cropsco2"))::numeric,2) AS "Crop_CO2", ROUND(SUM("totalghgagric")::numeric,2) AS "Total_GHG_agric", ROUND(SUM(DISTINCT"fao_ghgagric")::numeric,2) AS "FAO_GHGagric", ROUND((SUM("deforco2"))::numeric,2) AS "deforestation", ROUND((SUM("otherlucc"))::numeric,2) AS "Other_LUC", ROUND((SUM("sequestco2"))::numeric,2) AS "sequestration", ROUND(SUM("peatco2")::numeric,2) AS "peat", ROUND((sum("totalghglar"))::numeric,2) AS "total_GHG_land", ROUND(SUM(DISTINCT"fao_ghg_lu")::numeric,2) AS "fao_ghg_lu", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All FABLE countries\' GROUP BY "year" ORDER BY "year"';
                 break;
             case "regions":
-                var query = 'SELECT "year" as "Year", ROUND(SUM("netforest_change")::numeric,2) as "NetForestChange", ROUND(SUM("newforest_change")::numeric,2) as "Aforestation", ROUND(SUM("forest_change")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(SUM("biodivshareland")::numeric,2) as "Biodiversity_Land", ROUND((SUM("livestockch4"))::numeric,2) AS "Livestock_CH4", ROUND((SUM("livestockno2"))::numeric,2) AS "Livestock_N20", ROUND((SUM("cropsn2o"))::numeric,2) AS "Crop_N20", ROUND((SUM("cropsch4"))::numeric,2) AS "Crop_CH4", ROUND((SUM("cropsco2"))::numeric,2) AS "Crop_CO2", ROUND(SUM("totalghgagric")::numeric,2) AS "Total_GHG_agric", ROUND(SUM(DISTINCT"fao_ghgagric")::numeric,2) AS "FAO_GHGagric", ROUND((SUM("deforco2"))::numeric,2) AS "deforestation", ROUND((SUM("otherlucc"))::numeric,2) AS "Other_LUC", ROUND((SUM("sequestco2"))::numeric,2) AS "sequestration", ROUND(SUM("peatco2")::numeric,2) AS "peat", ROUND((SUM("totalghglar"))::numeric,2) AS "total_GHG_land", ROUND(SUM(DISTINCT"fao_ghg_lu")::numeric,2) AS "fao_ghg_lu", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All ROW regions\' GROUP BY "year" ORDER BY "year"';
+                var query = 'SELECT "year" as "Year", ROUND(SUM("netforest_change")::numeric,2) as "NetForestChange", ROUND(SUM("newforest_change")::numeric,2) as "Aforestation", ROUND(SUM("forest_change")::numeric,2) as "ForestLoss", ROUND(sum(DISTINCT "gfw_deforestation")::numeric,2) as "GFW_deforestation_global", ROUND(SUM("biodivshareland")::numeric,2) as "Biodiversity_Land", ROUND((SUM("livestockch4"))::numeric,2) AS "Livestock_CH4", ROUND((SUM("livestockno2"))::numeric,2) AS "Livestock_N20", ROUND((SUM("cropsn2o"))::numeric,2) AS "Crop_N20", ROUND((SUM("cropsch4"))::numeric,2) AS "Crop_CH4", ROUND((SUM("cropsco2"))::numeric,2) AS "Crop_CO2", ROUND(SUM("totalghgagric")::numeric,2) AS "Total_GHG_agric", ROUND(SUM(DISTINCT"fao_ghgagric")::numeric,2) AS "FAO_GHGagric", ROUND((SUM("deforco2"))::numeric,2) AS "deforestation", ROUND((SUM("otherlucc"))::numeric,2) AS "Other_LUC", ROUND((SUM("sequestco2"))::numeric,2) AS "sequestration", ROUND(SUM("peatco2")::numeric,2) AS "peat", ROUND((sum("totalghglar"))::numeric,2) AS "total_GHG_land", ROUND(SUM(DISTINCT"fao_ghg_lu")::numeric,2) AS "fao_ghg_lu", ROUND((avg("kcal_feas"))::numeric,2) AS kcal_feasible, ROUND((avg("kcal_targ"))::numeric,2) AS kcal_target, ROUND(avg("kcal_mder")::numeric,2) AS target_mder FROM public.indicators19 WHERE iteration=$1  AND "group"= \'All ROW regions\' GROUP BY "year" ORDER BY "year"';
                 break;
             default:
                 var query = null;
@@ -720,6 +720,114 @@ app.get('/Page1_FoodEnergy:combinations', async (req, res) => {
         res.status(200).json(response.rows)
          
 
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page2_NetForestCoverChange:combinations', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT i.year,c.country,sum(netforest_change) FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            case "countries":
+                var query = 'SELECT i.year,c.country,sum(netforest_change) FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 AND "group"= \'All FABLE countries\' group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            case "regions":
+                var query = 'SELECT i.year,c.country,sum(netforest_change) FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 AND "group"= \'All ROW regions\' group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [Iteration]);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page2_Biodiversity:combinations', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT i.year as "Year", c.country as "Country", sum(i.biodivshareland) as "Biodiversity_Land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            case "countries":
+                var query = 'SELECT i.year as "Year", c.country as "Country", sum(i.biodivshareland) as "Biodiversity_Land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 AND "group"= \'All FABLE countries\' group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            case "regions":
+                var query = 'SELECT i.year as "Year", c.country as "Country", sum(i.biodivshareland) as "Biodiversity_Land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 AND "group"= \'All ROW regions\' group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [Iteration]);
+        res.status(200).json(response.rows)
+        
+        
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page2_GreenhouseGas:combinations', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND(sum(i.totalghgagric)::numeric,2) as "Total_GHG_agric", ROUND(avg(i.totalghglar)::numeric,2) as "total_GHG_land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            case "countries":
+                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND(sum(i.totalghgagric)::numeric,2) as "Total_GHG_agric", ROUND(avg(i.totalghglar)::numeric,2) as "total_GHG_land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND "group"= \'All FABLE countries\'  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            case "regions":
+                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND(sum(i.totalghgagric)::numeric,2) as "Total_GHG_agric", ROUND(avg(i.totalghglar)::numeric,2) as "total_GHG_land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND "group"= \'All ROW regions\'  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [Iteration]);
+        res.status(200).json(response.rows)
+        
+        
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page2_FoodEnergy', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND((avg("kcal_feas"))::numeric,2) AS "Kcal_feasible" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            case "countries":
+                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND((avg("kcal_feas"))::numeric,2) AS "Kcal_feasible" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND "group"= \'All FABLE countries\'  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            case "regions":
+                var query = 'SELECT i.year as "Year", c.country as "Country", ROUND((avg("kcal_feas"))::numeric,2) AS "Kcal_feasible" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND "group"= \'All ROW regions\'  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [Iteration]);
+        res.status(200).json(response.rows)
+        
+        
 
     } catch (err) {
         console.error(err.message);
