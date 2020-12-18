@@ -758,13 +758,13 @@ app.get('/Page2_Biodiversity:combinations', async (req, res) => {
         const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT i.year as "Year", c.country as "Country", sum(i.biodivshareland) as "Biodiversity_Land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
+                var query = 'SELECT i.year as "Year", c.country as "Country", sum(i.biodivshareland) as "Protected_land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1  AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
                 break;
             case "countries":
-                var query = 'SELECT i.year as "Year", c.country as "Country", sum(i.biodivshareland) as "Biodiversity_Land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 AND "group"= \'All FABLE countries\' group by (c.country,i.year) order by (c.country,i.year)';
+                var query = 'SELECT i.year as "Year", c.country as "Country", sum(i.biodivshareland) as "Protected_land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 AND "group"= \'All FABLE countries\' group by (c.country,i.year) order by (c.country,i.year)';
                 break;
             case "regions":
-                var query = 'SELECT i.year as "Year", c.country as "Country", sum(i.biodivshareland) as "Biodiversity_Land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 AND "group"= \'All ROW regions\' group by (c.country,i.year) order by (c.country,i.year)';
+                var query = 'SELECT i.year as "Year", c.country as "Country", sum(i.biodivshareland) as "Protected_land" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 AND "group"= \'All ROW regions\' group by (c.country,i.year) order by (c.country,i.year)';
                 break;
             default:
                 var query = null;
