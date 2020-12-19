@@ -811,8 +811,8 @@ app.get('/Page2_FoodEnergy:combinations', async (req, res) => {
     
     try {
 
-        const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
-        switch (GraficaType) {
+        //const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch ("regions") {
             case "group":
                 var query = 'SELECT i.year as "Year", c.country as "Country", ROUND((avg("kcal_feas"))::numeric,2) AS "Kcal_feasible" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
                 break;
@@ -826,10 +826,175 @@ app.get('/Page2_FoodEnergy:combinations', async (req, res) => {
                 var query = null;
                 break;
         }
-        const response = await pool.query(query, [Iteration]);
+        const response = await pool.query(query, [5]);
         res.status(200).json(response.rows)
         
         
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/sdaw:combinations', async (req, res) => {
+    try {
+
+        
+        const { products , GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.netforest_change ELSE 0 END)::numeric,2) AS "Before", SUM(CASE WHEN i.iteration=5 THEN i.netforest_change ELSE 0 END) AS "After" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id WHERE i.year > 2000 AND c.country = ANY ($1) group by (i.year) order by (i.year)'; 
+                break;
+            case "countries":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.netforest_change ELSE 0 END)::numeric,2) AS "Before", SUM(CASE WHEN i.iteration=5 THEN i.netforest_change ELSE 0 END) AS "After" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id WHERE i.year > 2000 AND c.country = ANY ($1) AND "group"= \'All FABLE countries\' group by (i.year) order by (i.year)'; 
+                break;
+            case "regions":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.netforest_change ELSE 0 END)::numeric,2) AS "Before", SUM(CASE WHEN i.iteration=5 THEN i.netforest_change ELSE 0 END) AS "After" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id WHERE i.year > 2000 AND c.country = ANY ($1) AND "group"= \'All ROW regions\' group by (i.year) order by (i.year)'; 
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query, [products]);
+        res.status(200).json(response.rows)
+        
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page3_NetForestCoverChange:combinations', async (req, res) => {
+    try {
+
+        const { countries , GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.netforest_change ELSE 0 END)::numeric,2) AS "BeforeNetForestChange", SUM(CASE WHEN i.iteration=5 THEN i.netforest_change ELSE 0 END) AS "AfterNetForestChange" FROM indicators19 as i WHERE i.year > 2000  group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "countries":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.netforest_change ELSE 0 END)::numeric,2) AS "BeforeNetForestChange", SUM(CASE WHEN i.iteration=5 THEN i.netforest_change ELSE 0 END) AS "AfterNetForestChange" FROM indicators19 as i WHERE i.year > 2000 AND i.group= \'All FABLE countries\' group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "regions":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.netforest_change ELSE 0 END)::numeric,2) AS "BeforeNetForestChange", SUM(CASE WHEN i.iteration=5 THEN i.netforest_change ELSE 0 END) AS "AfterNetForestChange" FROM indicators19 as i  WHERE i.year > 2000 AND i.group= \'All ROW regions\' group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "arrayCountry":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.netforest_change ELSE 0 END)::numeric,2) AS "BeforeNetForestChange", SUM(CASE WHEN i.iteration=5 THEN i.netforest_change ELSE 0 END) AS "AfterNetForestChange" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id WHERE i.year > 2000 AND c.country = ANY ($1) group by (i.year) order by (i.year)'; 
+                var params=[countries];
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query,params);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page3_Biodiversity:combinations', async (req, res) => {
+    try {
+
+        const { countries , GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.biodivshareland ELSE 0 END)::numeric,2) AS "BeforeBiodiversity", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.biodivshareland ELSE 0 END)::numeric,2) AS "AfterBiodiversity" FROM indicators19 as i   group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "countries":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.biodivshareland ELSE 0 END)::numeric,2) AS "BeforeBiodiversity", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.biodivshareland ELSE 0 END)::numeric,2) AS "AfterBiodiversity" FROM indicators19 as i  WHERE i.group= \'All FABLE countries\' group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "regions":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.biodivshareland ELSE 0 END)::numeric,2) AS "BeforeBiodiversity", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.biodivshareland ELSE 0 END)::numeric,2) AS "AfterBiodiversity" FROM indicators19 as i  WHERE i.group= \'All ROW regions\' group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "arrayCountry":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.biodivshareland ELSE 0 END)::numeric,2) AS "BeforeBiodiversity", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.biodivshareland ELSE 0 END)::numeric,2) AS "AfterBiodiversity" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id WHERE c.country = ANY ($1) group by (i.year) order by (i.year)'; 
+                var params=[countries];
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query,params);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page3_GreenHouseGas:combinations', async (req, res) => {
+    try {
+
+        const { countries , GraficaType } = JSON.parse(req.params.combinations).select;
+        
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT i.year as "Year",ROUND(SUM(CASE WHEN i.iteration=50 THEN i.totalghgagric ELSE 0 END)::numeric,2) AS "BeforeGas1", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.totalghgagric ELSE 0 END)::numeric,2) AS "AfterGas1",ROUND(SUM(CASE WHEN i.iteration=50 THEN i.totalghglar ELSE 0 END)::numeric,2) AS "BeforeGas2", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.totalghglar ELSE 0 END)::numeric,2) AS "AfterGas2" FROM indicators19 as i   group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "countries":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.totalghgagric ELSE 0 END)::numeric,2) AS "BeforeGas1", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.totalghgagric ELSE 0 END)::numeric,2) AS "AfterGas1",ROUND(SUM(CASE WHEN i.iteration=50 THEN i.totalghglar ELSE 0 END)::numeric,2) AS "BeforeGas2", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.totalghglar ELSE 0 END)::numeric,2) AS "AfterGas2" FROM indicators19 as i  WHERE i.group= \'All FABLE countries\' group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "regions":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.totalghgagric ELSE 0 END)::numeric,2) AS "BeforeGas1", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.totalghgagric ELSE 0 END)::numeric,2) AS "AfterGas1",ROUND(SUM(CASE WHEN i.iteration=50 THEN i.totalghglar ELSE 0 END)::numeric,2) AS "BeforeGas2", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.totalghglar ELSE 0 END)::numeric,2) AS "AfterGas2" FROM indicators19 as i  WHERE i.group= \'All ROW regions\' group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "arrayCountry":
+                var query = 'SELECT i.year as "Year", ROUND(SUM(CASE WHEN i.iteration=50 THEN i.totalghgagric ELSE 0 END)::numeric,2) AS "BeforeGas1", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.totalghgagric ELSE 0 END)::numeric,2) AS "AfterGas1",ROUND(SUM(CASE WHEN i.iteration=50 THEN i.totalghglar ELSE 0 END)::numeric,2) AS "BeforeGas2", ROUND(SUM(CASE WHEN i.iteration=5 THEN i.totalghglar ELSE 0 END)::numeric,2) AS "AfterGas2" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id WHERE c.country = ANY ($1) group by (i.year) order by (i.year)'; 
+                var params=[countries];
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query,params);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+app.get('/Page3_FoodEnergy:combinations', async (req, res) => {
+    try {
+
+        const { countries , GraficaType } = JSON.parse(req.params.combinations).select;
+        
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT i.year as "Year",ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "BeforeKcalFeas", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "AfterKcalFeas", ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "BeforeMDER", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "AfterMDER" FROM indicators19 as i   group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "countries":
+                var query = 'SELECT i.year as "Year", ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "BeforeKcalFeas", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "AfterKcalFeas", ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "BeforeMDER", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "AfterMDER" FROM indicators19 as i  WHERE i.group= \'All FABLE countries\' group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "regions":
+                var query = 'SELECT i.year as "Year", ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "BeforeKcalFeas", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "AfterKcalFeas", ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "BeforeMDER", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "AfterMDER" FROM indicators19 as i  WHERE i.group= \'All ROW regions\' group by (i.year) order by (i.year)'; 
+                var params=[];
+                break;
+            case "arrayCountry":
+                var query = 'SELECT i.year as "Year", ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "BeforeKcalFeas", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "AfterKcalFeas", ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "BeforeMDER", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "AfterMDER" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id WHERE c.country = ANY ($1) group by (i.year) order by (i.year)'; 
+                var params=[['Argentina','Australia']];
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query,params);
+        res.status(200).json(response.rows)
+         
+
 
     } catch (err) {
         console.error(err.message);
