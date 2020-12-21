@@ -811,8 +811,8 @@ app.get('/Page2_FoodEnergy:combinations', async (req, res) => {
     
     try {
 
-        //const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
-        switch ("regions") {
+        const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
+        switch (GraficaType) {
             case "group":
                 var query = 'SELECT i.year as "Year", c.country as "Country", ROUND((avg("kcal_feas"))::numeric,2) AS "Kcal_feasible" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id where iteration=$1 AND i.year > 2000 group by (c.country,i.year) order by (c.country,i.year)';
                 break;
@@ -826,7 +826,7 @@ app.get('/Page2_FoodEnergy:combinations', async (req, res) => {
                 var query = null;
                 break;
         }
-        const response = await pool.query(query, [5]);
+        const response = await pool.query(query, [Iteration]);
         res.status(200).json(response.rows)
         
         
