@@ -584,7 +584,7 @@ app.get('/Page4_SingleProduct:combinations', async (req, res) => {
         
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 GROUP BY "year","product" ORDER BY "product","year"';
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exportsImports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 GROUP BY "year","product" ORDER BY "product","year"';
                 var params=[Iteration, product];
                 break;
             case "countries":
