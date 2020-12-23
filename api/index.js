@@ -808,7 +808,7 @@ app.get('/Page2_GreenhouseGas:combinations', async (req, res) => {
     }
 });
 app.get('/Page2_FoodEnergy:combinations', async (req, res) => {
-    
+
     try {
 
         const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
@@ -986,6 +986,42 @@ app.get('/Page3_FoodEnergy:combinations', async (req, res) => {
             case "arrayCountry":
                 var query = 'SELECT i.year as "Year", ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "BeforeKcalFeas", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_feas ELSE 0 END)::numeric,2) AS "AfterKcalFeas", ROUND(avg(CASE WHEN i.iteration=50 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "BeforeMDER", ROUND(avg(CASE WHEN i.iteration=5 THEN i.kcal_mder ELSE 0 END)::numeric,2) AS "AfterMDER" FROM indicators19 as i inner join countries as c on i.country_id=c.country_id WHERE c.country = ANY ($1) group by (i.year) order by (i.year)'; 
                 var params=[['Argentina','Australia']];
+                break;
+            default:
+                var query = null;
+                break;
+        }
+        const response = await pool.query(query,params);
+        res.status(200).json(response.rows)
+         
+
+
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.get('/Page4_SplitByCountries:combinations', async (req, res) => {
+    try {
+
+        const { Iteration, GraficaType , products, countries } = JSON.parse(req.params.combinations).select;
+        
+        switch (GraficaType) {
+            case "group":
+                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 and product in ($2) group by year,c.country,product order by year,c.country,product';
+                var params=[Iteration, products];
+                break;
+            case "countries":
+                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 AND "country_id" NOT IN (30,24,21,25,26,23,22,27) and product in ($2) group by year,c.country,product order by year,c.country,product';
+                var params=[Iteration, products];
+                break;
+            case "regions":
+                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 AND "country_id" IN(30,24,21,25,26,23,22,27) AND "country_id" NOT IN (30,24,21,25,26,23,22,27) and product in ($2) group by year,c.country,product order by year,c.country,product';
+                var params=[Iteration, products];
+                break;
+            case "arrayCountry":
+                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 and c.country IN($2) and product in ($3) group by year,c.country,product order by year,c.country,product';
+                var params=[Iteration, countries, products];
                 break;
             default:
                 var query = null;
