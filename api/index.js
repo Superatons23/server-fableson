@@ -1,7 +1,6 @@
 if(process.env.NODE_ENV==='development'){
     require('dotenv').config();
 }
-
 const express = require('express');
 const app = express();
 const cors = require("cors");
@@ -22,7 +21,7 @@ app.listen(process.env.PORT , () => {
     console.log(`listening ${process.env.PORT}`);
 });
 
-//routes
+//--------------------------------------------------------SCENATHON 2020----------------------------------------------//
 app.get('/testeo', async (req, res) => {
  
     try {
@@ -512,6 +511,8 @@ app.get('/target1:combinations', async (req, res) => {
     }
 });
 
+//--------------------------------------------------------SCENATHON 2019----------------------------------------------//
+
 
 app.get('/Page1_full:combinations', async (req, res) => {
     try {
@@ -583,7 +584,7 @@ app.get('/Page4_SingleProduct:combinations', async (req, res) => {
         
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exports-imports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 GROUP BY "year","product" ORDER BY "product","year"';
+                var query = 'SELECT "year", "product", SUM(("export_quantity"-"import_quantity")) AS "exportsImports" FROM "trade2" WHERE "iteration"=$1 AND "product"= $2 GROUP BY "year","product" ORDER BY "product","year"';
                 var params=[Iteration, product];
                 break;
             case "countries":
@@ -807,6 +808,7 @@ app.get('/Page2_GreenhouseGas:combinations', async (req, res) => {
     }
 });
 app.get('/Page2_FoodEnergy:combinations', async (req, res) => {
+
     try {
 
         const { Iteration, GraficaType } = JSON.parse(req.params.combinations).select;
