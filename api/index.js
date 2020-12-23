@@ -1008,16 +1008,16 @@ app.get('/Page4_SplitByCountries:combinations', async (req, res) => {
         
         switch (GraficaType) {
             case "group":
-                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 and product in ($2) group by year,c.country,product order by year,c.country,product';
-                var params=[Iteration, products];
+                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 group by year,c.country,product order by year,c.country,product';
+                var params=[Iteration];
                 break;
             case "countries":
-                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 AND "country_id" NOT IN (30,24,21,25,26,23,22,27) and product in ($2) group by year,c.country,product order by year,c.country,product';
-                var params=[Iteration, products];
+                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 AND "country_id" NOT IN (30,24,21,25,26,23,22,27) group by year,c.country,product order by year,c.country,product';
+                var params=[Iteration];
                 break;
             case "regions":
-                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 AND "country_id" IN(30,24,21,25,26,23,22,27) AND "country_id" NOT IN (30,24,21,25,26,23,22,27) and product in ($2) group by year,c.country,product order by year,c.country,product';
-                var params=[Iteration, products];
+                var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 AND "country_id" IN(30,24,21,25,26,23,22,27) AND "country_id" NOT IN (30,24,21,25,26,23,22,27) group by year,c.country,product order by year,c.country,product';
+                var params=[Iteration];
                 break;
             case "arrayCountry":
                 var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 and c.country IN($2) and product in ($3) group by year,c.country,product order by year,c.country,product';
