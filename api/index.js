@@ -1005,7 +1005,12 @@ app.get('/Page4_SplitByCountries:combinations', async (req, res) => {
     try {
 
         const { Iteration, GraficaType , products, countries } = JSON.parse(req.params.combinations).select;
-        
+       console.log("entre base de datos")
+        console.log("-----------------")
+        console.log("Countries")
+        console.log(countries)
+        console.log("products")
+        console.log(products)
         switch (GraficaType) {
             case "group":
                 var query = 'SELECT year as "Year",c.country as "Country",product ,sum(export_quantity-import_quantity) as import_export from trade2 inner join countries as c on c.country_id=trade2.country_id where iteration=$1 group by year,c.country,product order by year,c.country,product';
